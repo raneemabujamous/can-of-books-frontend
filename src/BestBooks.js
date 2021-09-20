@@ -23,7 +23,7 @@ return(
           <h3>{e.title}</h3>
           <p> {e.description}</p>
           <p>{e.status}</p>
-    
+    <button onClick={()=>this.props.handleDelete(this.props.catId)}></button>
         </Carousel.Caption>
       </Carousel.Item>))}
     </Carousel>
