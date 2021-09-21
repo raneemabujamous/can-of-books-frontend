@@ -6,7 +6,6 @@ import Footer from './Footer';
 import { Form } from 'react-bootstrap';
 import Formbook from './Formbook'
 
-
 export class App extends Component {
   constructor(props) {
     super(props)
@@ -15,67 +14,158 @@ export class App extends Component {
       title: "",
       description: "",
       status: "",
-books:{},
-      data: []
+      bookThatshow: [],
+      showUpdate: false,
+      id: ""
+
     }
   }
 
   componentDidMount = () => {
-    axios.get('http://localhost:8000/book').then(res => { this.setState({ data: res.data }) })
-  }
-
-  handlebookInput=e=>{
-  
+    axios.get(`https://boooraneem.herokuapp.com/book`).then(res => { this.setState({ bookThatshow: res.data }) })
+    
   }
 
   handelSubmit = (e) => {
-    const body = {
-      email : e.target.email.value,
-      title : e.target.title.value,
-       description :e.target.description.value,
-       status :e.target.status.value
+    e.preventDefault()
+console.log('faer')
+    let config = {
+      method: "POST",
+      // baseURL: process.env.REACT_APP_HORKO,
+      baseURL: "http://localhost:8000",
+
+      url: '/create-book',
+      data: {
+        email: this.state.email,
+        title: this.state.title,
+        description: this.state.description,
+        status: this.state.status
+      }
     }
-    axios.post(`http://localhost:8000/create-book`, body).then(axiosResponse => {
-    // console.log(axiosResponse.data);
-    this.state.books.push(axiosResponse.data);
-    this.setState({
-      data: this.state.books
+    axios(config).then(res => {
+      console.log(res.data)
+      this.setState({
+        bookThatshow: res.data
+      })
+      console.log(this.state.email,"Frompost")
+    })
     
-    });
-    console.log(this.state.books);
+  }
 
-  }).catch(error => alert(error));
-       
+  // }
 
+
+  handleEmail = (e) => {
+    this.setState({ email: e.target.value })
+  }
+  handleTitle = (e) => {
+    this.setState({ title: e.target.value })
 
   }
-  handleDelete=(id)=>{
-    let bookid=id;
-    let config={
-        method:"DELETE",
-        baseURL:"http://localhost:8000",
-        url:`/delete-book/${bookid}`,
-  
+  handleDescription = (e) => {
+    this.setState({ description: e.target.value })
+
+  }
+  handleStatus = (e) => {
+    this.setState({ status: e.target.value })
+
+  }
+
+  handleUpdate = (id, title, email, status, description) => {
+    this.setState({
+      title: title,
+      email: email,
+      status: status,
+      description: description,
+      id: id,
+      showUpdate: true
+    })
+    console.log(id, title)
+  }
+
+
+  handleDelete = (id) => {
+    let bookid = id;
+    console.log(bookid)
+
+    let config = {
+      method: "DELETE",
+
+      baseURL: "http://localhost:8000",
+      // baseURL: `${process.env.REACT_APP_HORKO}`,
+      url: `/delete-book/${bookid}`,
+
     }
-  
-    axios(config).then(response=>{
+
+    axios(config).then(response => {
       this.setState({
-        data:response.data
+        bookThatshow: response.data
       })
     })
-      
-}
+
+  }
+
+  handleUpdateForm = () => {
+    let config = {
+      method: "PUT",
+      // baseURL: process.env.REACT_APP_HORKO,
+      baseURL: "http://localhost:8000",
+      url: `/update-book/${this.state.id}`,
+      data: {
+        status: this.state.status,
+        email: this.state.email,
+        description: this.state.description,
+        title: this.state.title,
+
+      }
+    }
+    axios(config).then(res => {
+      this.setState({
+        bookThatshow: res.data
+      })
+      console.log(res.data)
+    });
+
+  }
 
   render() {
     return (
       <div>
 
         <Header />
-        <Formbook onSubmit={this.state.handelSubmit} onChange={this.state.handlebookInput}/>
+        {
+          !this.state.showUpdate ?
+            <Formbook handelSubmit={this.handelSubmit} handleEmail={this.handleEmail}
+              handleStatus={this.handleStatus} handleDescription={this.handleDescription}
+              handleTitle={this.handleTitle}
+            /> :
+            <form onSubmit={this.handleUpdateForm}>
+              <input
+                type="texts"
+                onChange={this.handleEmail}
+                value={this.state.email}
+              />
+              <input
+                type="texts"
+                value={this.state.title}
+                onChange={this.handleTitle} />
+              <input
+                type="texts"
+                value={this.state.description}
+                onChange={this.handleDescription} />
 
-        {console.log(this.state.data, "fron 1")}
-        <BestBooks data={this.state.data}  handleDelete={this.handleDelete}/>
-        <Footer />
+              <input
+                type="texts"
+                value={this.state.status}
+
+                onChange={this.handleStatus} />
+              <input type="submit" value="update" />
+            </form>
+
+        }
+        {console.log(this.state.bookThatshow, "fron 1")}
+        <BestBooks bookThatshow={this.state.bookThatshow} handleDelete={this.handleDelete}
+          handleUpdate={this.handleUpdate} />
       </div>
     )
   }

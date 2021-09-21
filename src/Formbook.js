@@ -7,16 +7,16 @@ class Form extends Component {
                 <form onSubmit={this.props.handelSubmit}>
 
                     <label>email</label>
-                    <input id="email" type="text"  onChange={this.props.handlebookInput}/>
+                    <input id="email" type="text" onChange={this.props.handleEmail} />
                     <label>title</label>
-                    <input id="title" type="text"  onChange={this.props.handlebookInput}/>
+                    <input id="title" type="text" onChange={this.props.handleTitle} />
                     <label> description</label>
-                    <input id="description" type="text" onChange={this.props.handlebookInput} />
+                    <input id="description" type="text" onChange={this.props.handleDescription} />
                     <label>status</label>
-                    <input id="status" type="text" onChange={this.props.handlebookInput} />
-                    <input type="submit" value="create book"/>
+                    <input id="status" type="text" onChange={this.props.handleStatus} />
+                    <input type="submit" value="ceate" />
                 </form>
-                
+
             </div>
         )
     }
