@@ -12,7 +12,7 @@ export class BestBooks extends Component {
 return(  
     
     <Carousel>
-    {this.props.data.map((e) => (
+    {this.props.bookThatshow.map((e) => (
       <Carousel.Item>
         <img
           className="d-block w-100"
@@ -23,7 +23,9 @@ return(
           <h3>{e.title}</h3>
           <p> {e.description}</p>
           <p>{e.status}</p>
-    <button onClick={()=>this.props.handleDelete(this.props.catId)}></button>
+    <button onClick={()=>this.props.handleDelete(e._id)}>Delete</button>
+    <button onClick={()=>this.props.handleUpdate(e._id,e.title,e.email,e.status,e.description )}>update</button>
+
         </Carousel.Caption>
       </Carousel.Item>))}
     </Carousel>
